@@ -813,7 +813,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int MSG_LOG_KEYBOARD_SYSTEM_EVENT = 26;
     private static final int MSG_SET_DEFERRED_KEY_ACTIONS_EXECUTABLE = 27;
 
-    // LMODroid additions
+    // DerpFest additions
     private static final int MSG_TOGGLE_TORCH = 100;
     private static final int MSG_CAMERA_LONG_PRESS = 101;
 
