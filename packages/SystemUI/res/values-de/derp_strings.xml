@@ -38,4 +38,9 @@
     <string name="drag_or_tap_to_add_tiles">Halten &amp; ziehen oder tippen zum Hinzufügen</string>
     <!-- Label for the area where tiles can be dragged in to remove -->
     <string name="drag_or_tap_to_remove_tiles">Halten &amp; ziehen oder tippen zum Entfernen</string>
+
+    <!-- Data usage info in QS footer -->
+    <string name="usage_data">heute verbraucht</string>
+    <string name="usage_data_default_suffix">Daten</string>
+    <string name="usage_wifi_default_suffix">WLAN</string>
 </resources>
