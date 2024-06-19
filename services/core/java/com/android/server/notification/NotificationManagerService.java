@@ -1,7 +1,5 @@
 /*
  * Copyright (C) 2007 The Android Open Source Project
- * Copyright (C) 2015 The CyanogenMod Project
- * Copyright (C) 2017 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -363,9 +361,6 @@ import com.android.server.utils.quota.MultiRateLimiter;
 import com.android.server.wm.ActivityTaskManagerInternal;
 import com.android.server.wm.BackgroundActivityStartCallback;
 import com.android.server.wm.WindowManagerInternal;
-
-import org.derpfest.notification.LedValues;
-import org.derpfest.notification.LineageNotificationLights;
 
 import libcore.io.IoUtils;
 
@@ -753,8 +748,6 @@ public class NotificationManagerService extends SystemService {
     private AppOpsManager.OnOpChangedListener mAppOpsListener;
 
     private ModuleInfo mAdservicesModuleInfo;
-
-    private LineageNotificationLights mLineageNotificationLights;
 
     static class Archive {
         final SparseArray<Boolean> mEnabled;
@@ -2766,13 +2759,6 @@ public class NotificationManagerService extends SystemService {
                 getContext().getSystemService(PermissionManager.class),
                 getContext().getSystemService(PowerManager.class),
                 new PostNotificationTrackerFactory() {});
-
-        mLineageNotificationLights = new LineageNotificationLights(getContext(),
-                 new LineageNotificationLights.LedUpdater() {
-            public void update() {
-                updateNotificationPulse();
-            }
-        });
 
         publishBinderService(Context.NOTIFICATION_SERVICE, mService, /* allowIsolated= */ false,
                 DUMP_FLAG_PRIORITY_CRITICAL | DUMP_FLAG_PRIORITY_NORMAL);
