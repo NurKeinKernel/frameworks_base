@@ -100,7 +100,7 @@ import com.android.server.usb.hal.gadget.UsbGadgetHalInstance;
 import com.android.server.utils.EventLogger;
 import com.android.server.wm.ActivityTaskManagerInternal;
 
-import org.derpfest.providers.DerpFestSettings;
+import com.libremobileos.providers.LMOSettings;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -418,7 +418,7 @@ public class UsbDeviceManager implements ActivityTaskManagerInternal.ScreenObser
         sEventLogger = new EventLogger(DUMPSYS_LOG_BUFFER, "UsbDeviceManager activity");
 
         mContentResolver.registerContentObserver(
-                Settings.Global.getUriFor(DerpFestSettings.Global.TRUST_RESTRICT_USB),
+                Settings.Global.getUriFor(LMOSettings.Global.TRUST_RESTRICT_USB),
                 false,
                 new ContentObserver(null) {
                     @Override
@@ -1804,7 +1804,7 @@ public class UsbDeviceManager implements ActivityTaskManagerInternal.ScreenObser
 
         public void setTrustRestrictUsb() {
             final int restrictUsb = Settings.Global.getInt(mContentResolver,
-                    DerpFestSettings.Global.TRUST_RESTRICT_USB, 0);
+                    LMOSettings.Global.TRUST_RESTRICT_USB, 0);
             // Effective immediately, ejects any connected USB devices.
             // If the restriction is set to "only when locked", only execute once USB is
             // disconnected and keyguard is showing, to avoid ejecting connected devices

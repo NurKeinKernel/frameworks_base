@@ -243,7 +243,7 @@ import dalvik.annotation.optimization.NeverCompile;
 
 import dagger.Lazy;
 
-import org.derpfest.providers.DerpFestSettings;
+import com.libremobileos.providers.LMOSettings;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -892,7 +892,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
                         && mWindowManagerService != null) {
                     boolean forcedVisibility = mNeedsNavigationBar || Settings.System.getInt(
                             mContext.getContentResolver(),
-                            DerpFestSettings.System.FORCE_SHOW_NAVBAR, 0) != 0;
+                            LMOSettings.System.FORCE_SHOW_NAVBAR, 0) != 0;
                     boolean hasNavbar = getNavigationBarView() != null;
                     mContext.getMainExecutor().execute(() -> {
                         if (forcedVisibility) {
@@ -909,7 +909,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
             }
         };
         mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(DerpFestSettings.System.FORCE_SHOW_NAVBAR), false,
+                Settings.System.getUriFor(LMOSettings.System.FORCE_SHOW_NAVBAR), false,
                 contentObserver);
         contentObserver.onChange(true);
 
@@ -1474,7 +1474,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(org.derpfest.content.Intent.ACTION_SCREEN_CAMERA_GESTURE);
+        filter.addAction(com.libremobileos.content.Intent.ACTION_SCREEN_CAMERA_GESTURE);
         mBroadcastDispatcher.registerReceiver(mBroadcastReceiver, filter, null, UserHandle.ALL);
     }
 
@@ -1956,7 +1956,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
                 }
                 finishBarAnimations();
                 mNotificationsController.resetUserExpandedStates();
-            } else if (org.derpfest.content.Intent.ACTION_SCREEN_CAMERA_GESTURE.equals(action)) {
+            } else if (com.libremobileos.content.Intent.ACTION_SCREEN_CAMERA_GESTURE.equals(action)) {
                 boolean userSetupComplete = Settings.Secure.getInt(mContext.getContentResolver(),
                         Settings.Secure.USER_SETUP_COMPLETE, 0) != 0;
                 if (!userSetupComplete) {

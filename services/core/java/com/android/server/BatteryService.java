@@ -73,11 +73,11 @@ import com.android.server.health.HealthServiceWrapper;
 import com.android.server.lights.LightsManager;
 import com.android.server.lights.LogicalLight;
 
+import com.libremobileos.notification.LedValues;
+import com.libremobileos.notification.LineageBatteryLights;
+
 import motorola.hardware.health.V1_0.BatteryProperties;
 import motorola.hardware.health.V1_0.IMotHealth;
-
-import org.derpfest.notification.LedValues;
-import org.derpfest.notification.LineageBatteryLights;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -1480,9 +1480,11 @@ public final class BatteryService extends SystemService {
             if (!ledValues.isEnabled()) {
                 mBatteryLight.turnOff();
             } else if (ledValues.isPulsed()) {
+                mBatteryLight.setModes(ledValues.getBrightness());
                 mBatteryLight.setFlashing(ledValues.getColor(), LogicalLight.LIGHT_FLASH_TIMED,
                         ledValues.getOnMs(), ledValues.getOffMs());
             } else {
+                mBatteryLight.setModes(ledValues.getBrightness());
                 mBatteryLight.setColor(ledValues.getColor());
             }
         }

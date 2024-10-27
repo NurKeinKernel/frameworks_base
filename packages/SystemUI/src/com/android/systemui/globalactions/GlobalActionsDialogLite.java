@@ -21,13 +21,14 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static android.view.WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.ScreenshotSource.SCREENSHOT_GLOBAL_ACTIONS;
+import static android.view.WindowManager.TAKE_SCREENSHOT_FULLSCREEN;
 import static android.view.WindowManager.TAKE_SCREENSHOT_SELECTED_REGION;
 
 import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.SOME_AUTH_REQUIRED_AFTER_USER_REQUEST;
 import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.STRONG_AUTH_NOT_REQUIRED;
 import static com.android.internal.widget.LockPatternUtils.StrongAuthTracker.STRONG_AUTH_REQUIRED_AFTER_USER_LOCKDOWN;
 
-import static org.derpfest.util.PowerMenuConstants.*;
+import static com.libremobileos.util.PowerMenuConstants.*;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -157,10 +158,9 @@ import com.android.systemui.util.RingerModeTracker;
 import com.android.systemui.util.settings.GlobalSettings;
 import com.android.systemui.util.settings.SecureSettings;
 
-import org.derpfest.app.LineageGlobalActions;
-import org.derpfest.providers.DerpFestSettings;
-
-import org.derpfest.util.PowerMenuUtils;
+import com.libremobileos.app.LineageGlobalActions;
+import com.libremobileos.providers.LMOSettings;
+import com.libremobileos.util.PowerMenuUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -191,7 +191,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     private static final boolean SHOW_SILENT_TOGGLE = true;
 
     /* Valid settings for restart actions keys.
-     * see frameworks_derpfest config.xml config_restartActionsList */
+     * see lineage-sdk config.xml config_restartActionsList */
     private static final String RESTART_ACTION_KEY_RESTART = "restart";
     private static final String RESTART_ACTION_KEY_RESTART_RECOVERY = "restart_recovery";
     private static final String RESTART_ACTION_KEY_RESTART_BOOTLOADER = "restart_bootloader";
@@ -466,7 +466,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         mConfigurationController.addCallback(this);
 
         mContext.getContentResolver().registerContentObserver(
-                Settings.Secure.getUriFor(DerpFestSettings.Secure.POWER_MENU_ACTIONS), false,
+                Settings.Secure.getUriFor(LMOSettings.Secure.POWER_MENU_ACTIONS), false,
                 new ContentObserver(null) {
                     @Override
                     public void onChange(boolean selfChange) {
@@ -1215,8 +1215,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             super(R.drawable.ic_screenshot, R.string.global_action_screenshot);
         }
 
-        @Override
-        public void onPress() {
+        private void takeScreenshot(int type) {
             // Add a little delay before executing, to give the
             // dialog a chance to go away before it takes a
             // screenshot.
@@ -1224,7 +1223,8 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mScreenshotHelper.takeScreenshot(SCREENSHOT_GLOBAL_ACTIONS, mHandler, null);
+                    mScreenshotHelper.takeScreenshot(type,
+                            SCREENSHOT_GLOBAL_ACTIONS, mHandler, null);
                     mMetricsLogger.action(MetricsEvent.ACTION_SCREENSHOT_POWER_MENU);
                     mUiEventLogger.log(GlobalActionsEvent.GA_SCREENSHOT_PRESS);
                 }
@@ -1232,9 +1232,14 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
         }
 
         @Override
+        public void onPress() {
+            takeScreenshot(TAKE_SCREENSHOT_FULLSCREEN);
+        }
+
+        @Override
         public boolean onLongPress() {
-            mScreenshotHelper.takeScreenshot(TAKE_SCREENSHOT_SELECTED_REGION, true, true,
-                    SCREENSHOT_GLOBAL_ACTIONS, mHandler, null);
+            takeScreenshot(TAKE_SCREENSHOT_SELECTED_REGION);
+
             return true;
         }
 

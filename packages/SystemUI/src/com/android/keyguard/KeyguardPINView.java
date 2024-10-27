@@ -44,7 +44,7 @@ import com.android.settingslib.animation.DisappearAnimationUtils;
 import com.android.systemui.res.R;
 import com.android.systemui.statusbar.policy.DevicePostureController.DevicePostureInt;
 
-import org.derpfest.providers.DerpFestSettings;
+import com.libremobileos.providers.LMOSettings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -282,8 +282,8 @@ public class KeyguardPINView extends KeyguardPinBasedInputView {
     }
 
     private void updatePinScrambling() {
-        final boolean scramblePin = DerpFestSettings.System.getInt(getContext().getContentResolver(),
-                DerpFestSettings.System.LOCKSCREEN_PIN_SCRAMBLE_LAYOUT, 0) == 1;
+        final boolean scramblePin = Settings.System.getInt(getContext().getContentResolver(),
+                LMOSettings.System.LOCKSCREEN_PIN_SCRAMBLE_LAYOUT, 0) == 1;
         if (scramblePin || scramblePin != mScramblePin) {
             mScramblePin = scramblePin;
             if (scramblePin) {

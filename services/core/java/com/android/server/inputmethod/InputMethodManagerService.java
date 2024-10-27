@@ -187,8 +187,8 @@ import com.android.server.statusbar.StatusBarManagerInternal;
 import com.android.server.utils.PriorityDump;
 import com.android.server.wm.WindowManagerInternal;
 
-import org.derpfest.hardware.LineageHardwareManager;
-import org.derpfest.providers.DerpFestSettings;
+import com.libremobileos.hardware.LineageHardwareManager;
+import com.libremobileos.providers.LMOSettings;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -409,6 +409,8 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
     @MultiUserUnawareField
     Future<?> mImeDrawsImeNavBarResLazyInitFuture;
 
+    private LineageHardwareManager mLineageHardware;
+
     private final ImeTracing.ServiceDumper mDumper = new ImeTracing.ServiceDumper() {
         /**
          * {@inheritDoc}
@@ -418,8 +420,6 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
             dumpDebug(proto, InputMethodManagerServiceTraceProto.INPUT_METHOD_MANAGER_SERVICE);
         }
     };
-
-    private LineageHardwareManager mLineageHardware;
 
     static class SessionState {
         final ClientState mClient;
@@ -760,18 +760,18 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
             if (mLineageHardware.isSupported(
                     LineageHardwareManager.FEATURE_HIGH_TOUCH_POLLING_RATE)) {
                 resolver.registerContentObserver(Settings.System.getUriFor(
-                        DerpFestSettings.System.HIGH_TOUCH_POLLING_RATE_ENABLE),
+                        LMOSettings.System.HIGH_TOUCH_POLLING_RATE_ENABLE),
                         false, this, userId);
             }
             if (mLineageHardware.isSupported(
                     LineageHardwareManager.FEATURE_HIGH_TOUCH_SENSITIVITY)) {
                 resolver.registerContentObserver(Settings.System.getUriFor(
-                        DerpFestSettings.System.HIGH_TOUCH_SENSITIVITY_ENABLE),
+                        LMOSettings.System.HIGH_TOUCH_SENSITIVITY_ENABLE),
                         false, this, userId);
             }
             if (mLineageHardware.isSupported(LineageHardwareManager.FEATURE_TOUCH_HOVERING)) {
                 resolver.registerContentObserver(Settings.Secure.getUriFor(
-                        DerpFestSettings.Secure.FEATURE_TOUCH_HOVERING), false, this, userId);
+                        LMOSettings.Secure.FEATURE_TOUCH_HOVERING), false, this, userId);
             }
             mRegistered = true;
         }
@@ -785,11 +785,11 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
             final Uri stylusHandwritingEnabledUri = Settings.Secure.getUriFor(
                     STYLUS_HANDWRITING_ENABLED);
             final Uri highTouchPollingRateUri = Settings.System.getUriFor(
-                    DerpFestSettings.System.HIGH_TOUCH_POLLING_RATE_ENABLE);
+                    LMOSettings.System.HIGH_TOUCH_POLLING_RATE_ENABLE);
             final Uri touchSensitivityUri = Settings.System.getUriFor(
-                    DerpFestSettings.System.HIGH_TOUCH_SENSITIVITY_ENABLE);
+                    LMOSettings.System.HIGH_TOUCH_SENSITIVITY_ENABLE);
             final Uri touchHoveringUri = Settings.Secure.getUriFor(
-                    DerpFestSettings.Secure.FEATURE_TOUCH_HOVERING);
+                    LMOSettings.Secure.FEATURE_TOUCH_HOVERING);
             synchronized (ImfLock.class) {
                 if (showImeUri.equals(uri)) {
                     mMenuController.updateKeyboardFromSettingsLocked();
@@ -3112,7 +3112,7 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
             return;
         }
         final boolean enabled = Settings.System.getInt(mContext.getContentResolver(),
-                DerpFestSettings.System.HIGH_TOUCH_POLLING_RATE_ENABLE, 0) == 1;
+                LMOSettings.System.HIGH_TOUCH_POLLING_RATE_ENABLE, 0) == 1;
         mLineageHardware.set(LineageHardwareManager.FEATURE_HIGH_TOUCH_POLLING_RATE, enabled);
     }
 
@@ -3121,7 +3121,7 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
             return;
         }
         final boolean enabled = Settings.System.getInt(mContext.getContentResolver(),
-                DerpFestSettings.System.HIGH_TOUCH_SENSITIVITY_ENABLE, 0) == 1;
+                LMOSettings.System.HIGH_TOUCH_SENSITIVITY_ENABLE, 0) == 1;
         mLineageHardware.set(LineageHardwareManager.FEATURE_HIGH_TOUCH_SENSITIVITY, enabled);
     }
 
@@ -3130,7 +3130,7 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
             return;
         }
         final boolean enabled = Settings.Secure.getInt(mContext.getContentResolver(),
-                DerpFestSettings.Secure.FEATURE_TOUCH_HOVERING, 0) == 1;
+                LMOSettings.Secure.FEATURE_TOUCH_HOVERING, 0) == 1;
         mLineageHardware.set(LineageHardwareManager.FEATURE_TOUCH_HOVERING, enabled);
     }
 

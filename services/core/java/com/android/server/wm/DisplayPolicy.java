@@ -150,8 +150,7 @@ import com.android.server.statusbar.StatusBarManagerInternal;
 import com.android.server.wallpaper.WallpaperManagerInternal;
 import com.android.wm.shell.Flags;
 
-import android.provider.Settings;
-import org.derpfest.providers.DerpFestSettings;
+import com.libremobileos.providers.LMOSettings;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -414,7 +413,7 @@ public class DisplayPolicy {
 
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.FORCE_SHOW_NAVBAR), false, this,
+                    LMOSettings.System.FORCE_SHOW_NAVBAR), false, this,
                     UserHandle.USER_ALL);
 
             updateSettings();
@@ -743,7 +742,7 @@ public class DisplayPolicy {
         ContentResolver resolver = mContext.getContentResolver();
 
         mForceNavbar = Settings.System.getIntForUser(resolver,
-                DerpFestSettings.System.FORCE_SHOW_NAVBAR, 0,
+                LMOSettings.System.FORCE_SHOW_NAVBAR, 0,
                 UserHandle.USER_CURRENT);
     }
 

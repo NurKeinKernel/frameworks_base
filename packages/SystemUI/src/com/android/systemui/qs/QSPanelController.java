@@ -47,7 +47,7 @@ import com.android.systemui.settings.brightness.MirrorController;
 import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
 import com.android.systemui.statusbar.policy.SplitShadeStateController;
 
-import org.derpfest.providers.DerpFestSettings;
+import com.libremobileos.providers.LMOSettings;
 
 import kotlinx.coroutines.flow.StateFlow;
 
@@ -145,15 +145,15 @@ public class QSPanelController extends QSPanelControllerBase<QSPanel> {
         updateMediaDisappearParameters();
 
         getContext().getContentResolver().registerContentObserver(
-                Settings.Secure.getUriFor(DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS),
+                Settings.Secure.getUriFor(LMOSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS),
                 false, mView.getContentObserver());
         mView.getContentObserver().onChange(true,
-                Settings.Secure.getUriFor(DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS));
+                Settings.Secure.getUriFor(LMOSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS));
         getContext().getContentResolver().registerContentObserver(
-                Settings.Secure.getUriFor(DerpFestSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER),
+                Settings.Secure.getUriFor(LMOSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER),
                 false, mView.getContentObserver());
         mView.getContentObserver().onChange(true,
-                Settings.Secure.getUriFor(DerpFestSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER));
+                Settings.Secure.getUriFor(LMOSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER));
         getContext().getContentResolver().registerContentObserver(
                 Settings.Secure.getUriFor(QS_SHOW_BRIGHTNESS), false, mView.getContentObserver());
         mView.getContentObserver().onChange(true,

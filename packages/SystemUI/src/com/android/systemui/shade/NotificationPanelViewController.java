@@ -244,8 +244,6 @@ import com.android.systemui.util.Utils;
 import com.android.systemui.util.time.SystemClock;
 import com.android.wm.shell.animation.FlingAnimationUtils;
 
-import org.derpfest.providers.DerpFestSettings;
-
 import dalvik.annotation.optimization.NeverCompile;
 
 import kotlin.Unit;
@@ -253,6 +251,8 @@ import kotlin.Unit;
 import kotlinx.coroutines.CoroutineDispatcher;
 import kotlinx.coroutines.flow.Flow;
 import kotlinx.coroutines.flow.StateFlow;
+
+import com.libremobileos.providers.LMOSettings;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -372,7 +372,6 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     private final QuickSettingsControllerImpl mQsController;
     private final NaturalScrollingSettingObserver mNaturalScrollingSettingObserver;
     private final TouchHandler mTouchHandler = new TouchHandler();
-
     private long mDownTime;
     private boolean mTouchSlopExceededBeforeDown;
     private float mOverExpansion;
@@ -958,7 +957,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             @Override
             public void onChange(boolean selfChange) {
                 mDoubleTapToSleepEnabled = Settings.System.getInt(mContentResolver,
-                        DerpFestSettings.System.DOUBLE_TAP_SLEEP_GESTURE,
+                        LMOSettings.System.DOUBLE_TAP_SLEEP_GESTURE,
                         mResources.getBoolean(com.android.internal.R.bool.
                                 config_dt2sGestureEnabledByDefault) ? 1 : 0) != 0;
             }
@@ -4736,7 +4735,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             }
             mConfigurationController.addCallback(mConfigurationListener);
             mContentResolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.DOUBLE_TAP_SLEEP_GESTURE), false,
+                    LMOSettings.System.DOUBLE_TAP_SLEEP_GESTURE), false,
                     mDoubleTapToSleepObserver);
             mDoubleTapToSleepObserver.onChange(true);
             // Theme might have changed between inflating this view and attaching it to the

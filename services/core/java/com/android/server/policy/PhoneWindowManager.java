@@ -98,7 +98,7 @@ import static com.android.server.wm.WindowManagerPolicyProto.ROTATION_MODE;
 import static com.android.server.wm.WindowManagerPolicyProto.SCREEN_ON_FULLY;
 import static com.android.server.wm.WindowManagerPolicyProto.WINDOW_MANAGER_DRAW_COMPLETE;
 
-import static org.derpfest.util.DeviceKeysConstants.*;
+import static com.libremobileos.util.DeviceKeysConstants.*;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.NonNull;
@@ -254,10 +254,10 @@ import com.android.server.wm.DisplayRotation;
 import com.android.server.wm.WindowManagerInternal;
 import com.android.server.wm.WindowManagerInternal.AppTransitionListener;
 
-import org.derpfest.hardware.LineageHardwareManager;
-import org.derpfest.providers.DerpFestSettings;
-import org.derpfest.util.ActionUtils;
-import org.derpfest.util.VolumeKeyHandler;
+import com.libremobileos.hardware.LineageHardwareManager;
+import com.libremobileos.providers.LMOSettings;
+import com.libremobileos.util.ActionUtils;
+import com.libremobileos.util.VolumeKeyHandler;
 
 import dalvik.system.PathClassLoader;
 
@@ -697,6 +697,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // Behavior of Back button while in-call and screen on
     int mIncallBackBehavior;
 
+    // Behavior of HOME button during an incoming call.
+    // (See LMOSettings.Secure.RING_HOME_BUTTON_BEHAVIOR.)
+    int mRingHomeBehavior;
+
     // Whether system navigation keys are enabled
     boolean mSystemNavigationKeysEnabled;
 
@@ -710,10 +714,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     // Must match config_primaryShortPressTargetActivity in config.xml
     ComponentName mPrimaryShortPressTargetActivity;
-
-    // Behavior of HOME button during an incoming call.
-    // (See DerpFestSettings.Secure.RING_HOME_BUTTON_BEHAVIOR.)
-    int mRingHomeBehavior;
 
     // Whether to lock the device after the next dreaming transition has finished.
     private boolean mLockAfterDreamingTransitionFinished;
@@ -811,7 +811,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private static final int MSG_LOG_KEYBOARD_SYSTEM_EVENT = 26;
     private static final int MSG_SET_DEFERRED_KEY_ACTIONS_EXECUTABLE = 27;
 
-    // LMODroid additions
+    // Lineage additions
     private static final int MSG_TOGGLE_TORCH = 100;
     private static final int MSG_CAMERA_LONG_PRESS = 101;
 
@@ -952,16 +952,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.Secure.INCALL_BACK_BUTTON_BEHAVIOR), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.CAMERA_WAKE_SCREEN), false, this,
+                    LMOSettings.System.CAMERA_WAKE_SCREEN), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.CAMERA_SLEEP_ON_RELEASE), false, this,
+                    LMOSettings.System.CAMERA_SLEEP_ON_RELEASE), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.CAMERA_LAUNCH), false, this,
+                    LMOSettings.System.CAMERA_LAUNCH), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
-                    DerpFestSettings.Secure.RING_HOME_BUTTON_BEHAVIOR), false, this,
+                    LMOSettings.Secure.RING_HOME_BUTTON_BEHAVIOR), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.WAKE_GESTURE_ENABLED), false, this,
@@ -1021,64 +1021,64 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.Secure.NAV_BAR_KIDS_MODE), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.TORCH_LONG_PRESS_POWER_GESTURE), false, this,
+                    LMOSettings.System.TORCH_LONG_PRESS_POWER_GESTURE), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.TORCH_LONG_PRESS_POWER_TIMEOUT), false, this,
+                    LMOSettings.System.TORCH_LONG_PRESS_POWER_TIMEOUT), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.CLICK_PARTIAL_SCREENSHOT), false, this,
+                    LMOSettings.System.CLICK_PARTIAL_SCREENSHOT), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.KEY_BACK_LONG_PRESS_ACTION), false, this,
+                    LMOSettings.System.KEY_BACK_LONG_PRESS_ACTION), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.KEY_HOME_LONG_PRESS_ACTION), false, this,
+                    LMOSettings.System.KEY_HOME_LONG_PRESS_ACTION), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.KEY_HOME_DOUBLE_TAP_ACTION), false, this,
+                    LMOSettings.System.KEY_HOME_DOUBLE_TAP_ACTION), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.FORCE_SHOW_NAVBAR), false, this,
+                    LMOSettings.System.FORCE_SHOW_NAVBAR), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.KEY_MENU_ACTION), false, this,
+                    LMOSettings.System.KEY_MENU_ACTION), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.KEY_MENU_LONG_PRESS_ACTION), false, this,
+                    LMOSettings.System.KEY_MENU_LONG_PRESS_ACTION), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.KEY_ASSIST_ACTION), false, this,
+                    LMOSettings.System.KEY_ASSIST_ACTION), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.KEY_ASSIST_LONG_PRESS_ACTION), false, this,
+                    LMOSettings.System.KEY_ASSIST_LONG_PRESS_ACTION), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.KEY_APP_SWITCH_ACTION), false, this,
+                    LMOSettings.System.KEY_APP_SWITCH_ACTION), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION), false, this,
+                    LMOSettings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.HOME_WAKE_SCREEN), false, this,
+                    LMOSettings.System.HOME_WAKE_SCREEN), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.BACK_WAKE_SCREEN), false, this,
+                    LMOSettings.System.BACK_WAKE_SCREEN), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.MENU_WAKE_SCREEN), false, this,
+                    LMOSettings.System.MENU_WAKE_SCREEN), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.ASSIST_WAKE_SCREEN), false, this,
+                    LMOSettings.System.ASSIST_WAKE_SCREEN), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.APP_SWITCH_WAKE_SCREEN), false, this,
+                    LMOSettings.System.APP_SWITCH_WAKE_SCREEN), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.VOLUME_WAKE_SCREEN), false, this,
+                    LMOSettings.System.VOLUME_WAKE_SCREEN), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    DerpFestSettings.System.VOLUME_ANSWER_CALL), false, this,
+                    LMOSettings.System.VOLUME_ANSWER_CALL), false, this,
                     UserHandle.USER_ALL);
             updateSettings();
         }
@@ -2168,7 +2168,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private void launchCameraAction() {
         sendCloseSystemWindows();
-        Intent intent = new Intent(org.derpfest.content.Intent.ACTION_SCREEN_CAMERA_GESTURE);
+        Intent intent = new Intent(com.libremobileos.content.Intent.ACTION_SCREEN_CAMERA_GESTURE);
         mContext.sendBroadcast(intent, android.Manifest.permission.STATUS_BAR_SERVICE);
     }
 
@@ -2283,7 +2283,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
 
                 if ((mRingHomeBehavior
-                        & DerpFestSettings.Secure.RING_HOME_BUTTON_BEHAVIOR_ANSWER) != 0) {
+                        & LMOSettings.Secure.RING_HOME_BUTTON_BEHAVIOR_ANSWER) != 0) {
                     final TelecomManager telecomManager = getTelecommService();
                     if (telecomManager != null && telecomManager.isRinging()) {
                         telecomManager.acceptRingingCall();
@@ -2525,7 +2525,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mWakeGestureListener = new MyWakeGestureListener(mContext, mHandler);
         mSettingsObserver = new SettingsObserver(mHandler);
 
-        // DerpFest additions
+        // Lineage additions
         mAlarmManager = mContext.getSystemService(AlarmManager.class);
         mCameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
         mCameraManager.registerTorchCallback(new TorchModeCallback(), mHandler);
@@ -3161,7 +3161,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
 
         mBackLongPressAction = Action.fromSettings(resolver,
-                DerpFestSettings.System.KEY_BACK_LONG_PRESS_ACTION,
+                LMOSettings.System.KEY_BACK_LONG_PRESS_ACTION,
                 mBackLongPressAction);
 
         mHomeLongPressAction = Action.fromIntSafe(res.getInteger(
@@ -3177,35 +3177,35 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
 
         mHomeLongPressAction = Action.fromSettings(resolver,
-                DerpFestSettings.System.KEY_HOME_LONG_PRESS_ACTION,
+                LMOSettings.System.KEY_HOME_LONG_PRESS_ACTION,
                 mHomeLongPressAction);
         mHomeDoubleTapAction = Action.fromSettings(resolver,
-                DerpFestSettings.System.KEY_HOME_DOUBLE_TAP_ACTION,
+                LMOSettings.System.KEY_HOME_DOUBLE_TAP_ACTION,
                 mHomeDoubleTapAction);
 
         if (hasMenu) {
             mMenuPressAction = Action.fromSettings(resolver,
-                    DerpFestSettings.System.KEY_MENU_ACTION,
+                    LMOSettings.System.KEY_MENU_ACTION,
                     mMenuPressAction);
             mMenuLongPressAction = Action.fromSettings(resolver,
-                    DerpFestSettings.System.KEY_MENU_LONG_PRESS_ACTION,
+                    LMOSettings.System.KEY_MENU_LONG_PRESS_ACTION,
                     mMenuLongPressAction);
         }
         if (hasAssist) {
             mAssistPressAction = Action.fromSettings(resolver,
-                    DerpFestSettings.System.KEY_ASSIST_ACTION,
+                    LMOSettings.System.KEY_ASSIST_ACTION,
                     mAssistPressAction);
             mAssistLongPressAction = Action.fromSettings(resolver,
-                    DerpFestSettings.System.KEY_ASSIST_LONG_PRESS_ACTION,
+                    LMOSettings.System.KEY_ASSIST_LONG_PRESS_ACTION,
                     mAssistLongPressAction);
         }
         if (hasAppSwitch) {
             mAppSwitchPressAction = Action.fromSettings(resolver,
-                    DerpFestSettings.System.KEY_APP_SWITCH_ACTION,
+                    LMOSettings.System.KEY_APP_SWITCH_ACTION,
                     mAppSwitchPressAction);
         }
         mAppSwitchLongPressAction = Action.fromSettings(resolver,
-                DerpFestSettings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION,
+                LMOSettings.System.KEY_APP_SWITCH_LONG_PRESS_ACTION,
                 mAppSwitchLongPressAction);
 
         mShortPressOnWindowBehavior = SHORT_PRESS_WINDOW_NOTHING;
@@ -3254,8 +3254,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.Secure.INCALL_BACK_BUTTON_BEHAVIOR_DEFAULT,
                     UserHandle.USER_CURRENT);
             mRingHomeBehavior = Settings.Secure.getIntForUser(resolver,
-                    DerpFestSettings.Secure.RING_HOME_BUTTON_BEHAVIOR,
-                    DerpFestSettings.Secure.RING_HOME_BUTTON_BEHAVIOR_DEFAULT,
+                    LMOSettings.Secure.RING_HOME_BUTTON_BEHAVIOR,
+                    LMOSettings.Secure.RING_HOME_BUTTON_BEHAVIOR_DEFAULT,
                     UserHandle.USER_CURRENT);
             mSystemNavigationKeysEnabled = Settings.Secure.getIntForUser(resolver,
                     Settings.Secure.SYSTEM_NAVIGATION_KEYS_ENABLED,
@@ -3272,44 +3272,44 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             mTorchLongPressPowerEnabled = Settings.System.getIntForUser(
-                    resolver, DerpFestSettings.System.TORCH_LONG_PRESS_POWER_GESTURE, 0,
+                    resolver, LMOSettings.System.TORCH_LONG_PRESS_POWER_GESTURE, 0,
                     UserHandle.USER_CURRENT) == 1;
             mTorchTimeout = Settings.System.getIntForUser(
-                    resolver, DerpFestSettings.System.TORCH_LONG_PRESS_POWER_TIMEOUT, 0,
+                    resolver, LMOSettings.System.TORCH_LONG_PRESS_POWER_TIMEOUT, 0,
                     UserHandle.USER_CURRENT);
             mClickPartialScreenshot = Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.CLICK_PARTIAL_SCREENSHOT, 0,
+                    LMOSettings.System.CLICK_PARTIAL_SCREENSHOT, 0,
                     UserHandle.USER_CURRENT) == 1;
             mWakeOnHomeKeyPress = (Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.HOME_WAKE_SCREEN, 1, UserHandle.USER_CURRENT) == 1)
+                    LMOSettings.System.HOME_WAKE_SCREEN, 1, UserHandle.USER_CURRENT) == 1)
                     && ((mDeviceHardwareWakeKeys & KEY_MASK_HOME) != 0);
             mWakeOnBackKeyPress = (Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.BACK_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
+                    LMOSettings.System.BACK_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
                     && ((mDeviceHardwareWakeKeys & KEY_MASK_BACK) != 0);
             mWakeOnMenuKeyPress = (Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.MENU_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
+                    LMOSettings.System.MENU_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
                     && ((mDeviceHardwareWakeKeys & KEY_MASK_MENU) != 0);
             mWakeOnAssistKeyPress = (Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.ASSIST_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
+                    LMOSettings.System.ASSIST_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
                     && ((mDeviceHardwareWakeKeys & KEY_MASK_ASSIST) != 0);
             mWakeOnAppSwitchKeyPress = (Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.APP_SWITCH_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
+                    LMOSettings.System.APP_SWITCH_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
                     && ((mDeviceHardwareWakeKeys & KEY_MASK_APP_SWITCH) != 0);
             mWakeOnVolumeKeyPress = (Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.VOLUME_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
+                    LMOSettings.System.VOLUME_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
                     && ((mDeviceHardwareWakeKeys & KEY_MASK_VOLUME) != 0);
             mVolumeAnswerCall = (Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.VOLUME_ANSWER_CALL, 0, UserHandle.USER_CURRENT) == 1)
+                    LMOSettings.System.VOLUME_ANSWER_CALL, 0, UserHandle.USER_CURRENT) == 1)
                     && ((mDeviceHardwareWakeKeys & KEY_MASK_VOLUME) != 0);
             mWakeOnCameraKeyPress = (Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.CAMERA_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
+                    LMOSettings.System.CAMERA_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
                     && ((mDeviceHardwareWakeKeys & KEY_MASK_CAMERA) != 0);
             mCameraSleepOnRelease = mWakeOnCameraKeyPress &&
                     Settings.System.getIntForUser(resolver,
-                            DerpFestSettings.System.CAMERA_SLEEP_ON_RELEASE, 0,
+                            LMOSettings.System.CAMERA_SLEEP_ON_RELEASE, 0,
                             UserHandle.USER_CURRENT) == 1;
             mCameraLaunch = Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.CAMERA_LAUNCH, 0,
+                    LMOSettings.System.CAMERA_LAUNCH, 0,
                     UserHandle.USER_CURRENT) == 1;
 
             // Configure wake gesture.
@@ -3322,7 +3322,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             int forceNavbar = Settings.System.getIntForUser(resolver,
-                    DerpFestSettings.System.FORCE_SHOW_NAVBAR, 0,
+                    LMOSettings.System.FORCE_SHOW_NAVBAR, 0,
                     UserHandle.USER_CURRENT);
             if (forceNavbar != mForceNavbar) {
                 mForceNavbar = forceNavbar;
@@ -6990,8 +6990,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void sendLidChangeBroadcast() {
         final int lidState = mDefaultDisplayPolicy.getLidState();
         Log.d(TAG, "Sending cover change broadcast, lidState=" + lidState);
-        Intent intent = new Intent(org.derpfest.content.Intent.ACTION_LID_STATE_CHANGED);
-        intent.putExtra(org.derpfest.content.Intent.EXTRA_LID_STATE, lidState);
+        Intent intent = new Intent(com.libremobileos.content.Intent.ACTION_LID_STATE_CHANGED);
+        intent.putExtra(com.libremobileos.content.Intent.EXTRA_LID_STATE, lidState);
         intent.setFlags(Intent.FLAG_RECEIVER_REPLACE_PENDING);
         mContext.sendBroadcastAsUser(intent, UserHandle.SYSTEM);
     }

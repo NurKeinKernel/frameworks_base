@@ -38,7 +38,7 @@ import com.android.systemui.shade.NotificationShadeWindowView;
 import com.android.systemui.shade.ShadeViewController;
 import com.android.systemui.statusbar.NotificationShadeDepthController;
 
-import org.derpfest.providers.DerpFestSettings;
+import com.libremobileos.providers.LMOSettings;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -82,18 +82,18 @@ public class BrightnessMirrorController implements MirrorController {
 
         mIsAutomaticBrightnessAvailable = mBrightnessMirror.getContext().getResources().getBoolean(
                 com.android.internal.R.bool.config_automatic_brightness_available);
-        mShouldShowAutoBrightness = DerpFestSettings.Secure.getInt(
+        mShouldShowAutoBrightness = Settings.Secure.getInt(
                 mBrightnessMirror.getContext().getContentResolver(),
-                DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS, 0) != 0;
+                LMOSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS, 0) != 0;
         updateIcon();
         mBrightnessMirror.getContext().getContentResolver().registerContentObserver(
-                Settings.Secure.getUriFor(DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS),
+                Settings.Secure.getUriFor(LMOSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS),
                 false, new ContentObserver(null) {
                     @Override
                     public void onChange(boolean selfChange) {
-                        mShouldShowAutoBrightness = DerpFestSettings.Secure.getInt(
+                        mShouldShowAutoBrightness = Settings.Secure.getInt(
                                 mBrightnessMirror.getContext().getContentResolver(),
-                                DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS, 0) != 0;
+                                LMOSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS, 0) != 0;
                         updateIcon();
                     }
                 });

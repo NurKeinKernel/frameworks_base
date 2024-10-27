@@ -89,8 +89,7 @@ import com.android.systemui.statusbar.phone.LightBarTransitionsController;
 import com.android.wm.shell.back.BackAnimation;
 import com.android.wm.shell.pip.Pip;
 
-import android.provider.Settings;
-import org.derpfest.providers.DerpFestSettings;
+import com.libremobileos.providers.LMOSettings;
 
 import java.io.PrintWriter;
 import java.util.Map;
@@ -304,9 +303,9 @@ public class NavigationBarView extends FrameLayout {
                 new ContextualButton(R.id.accessibility_button, mLightContext,
                         R.drawable.ic_sysbar_accessibility_button);
         final ContextualButton cursorLeftButton = new ContextualButton(R.id.dpad_left,
-                mLightContext, R.drawable.ic_chevron_left);
+                mLightContext, R.drawable.ic_chevron_start);
         final ContextualButton cursorRightButton = new ContextualButton(R.id.dpad_right,
-                mLightContext, R.drawable.ic_chevron_right);
+                mLightContext, R.drawable.ic_chevron_end);
         mContextualButtonGroup.addButton(imeSwitcherButton);
         mContextualButtonGroup.addButton(accessibilityButton);
         mFloatingRotationButton = new FloatingRotationButton(mContext,
@@ -349,7 +348,7 @@ public class NavigationBarView extends FrameLayout {
             public void onChange(boolean selfChange) {
                 mShowCursorKeys = Settings.System.getInt(
                         mContext.getContentResolver(),
-                        DerpFestSettings.System.NAVIGATION_BAR_MENU_ARROW_KEYS, 0) != 0;
+                        LMOSettings.System.NAVIGATION_BAR_MENU_ARROW_KEYS, 0) != 0;
                 setNavigationIconHints(mNavigationIconHints);
             }
         };
@@ -502,8 +501,8 @@ public class NavigationBarView extends FrameLayout {
         }
         if (densityChange || dirChange) {
             mRecentIcon = getDrawable(R.drawable.ic_sysbar_recent);
-            mCursorLeftIcon = getDrawable(R.drawable.ic_chevron_left);
-            mCursorRightIcon = getDrawable(R.drawable.ic_chevron_right);
+            mCursorLeftIcon = getDrawable(R.drawable.ic_chevron_start);
+            mCursorRightIcon = getDrawable(R.drawable.ic_chevron_end);
             mContextualButtonGroup.updateIcons(mLightIconColor, mDarkIconColor);
         }
         if (orientationChange || densityChange || dirChange) {
@@ -1125,7 +1124,7 @@ public class NavigationBarView extends FrameLayout {
         reorient();
 
         mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                        DerpFestSettings.System.NAVIGATION_BAR_MENU_ARROW_KEYS), false,
+                        LMOSettings.System.NAVIGATION_BAR_MENU_ARROW_KEYS), false,
                 mShowCursorKeysObserver);
         mShowCursorKeysObserver.onChange(true);
         if (mRotationButtonController != null) {

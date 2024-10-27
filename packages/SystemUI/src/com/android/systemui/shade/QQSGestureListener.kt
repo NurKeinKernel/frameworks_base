@@ -19,13 +19,12 @@ package com.android.systemui.shade
 import android.content.Context
 import android.database.ContentObserver
 import android.os.PowerManager
-import android.provider.Settings
 import android.view.GestureDetector
 import android.view.MotionEvent
 import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.plugins.FalsingManager
 import com.android.systemui.plugins.statusbar.StatusBarStateController
-import org.derpfest.providers.DerpFestSettings
+import com.libremobileos.providers.LMOSettings
 import javax.inject.Inject
 
 @SysUISingleton
@@ -43,13 +42,13 @@ class QQSGestureListener @Inject constructor(
         val contentObserver = object : ContentObserver(null) {
             override fun onChange(selfChange: Boolean) {
                 doubleTapToSleepEnabled = Settings.System.getInt(
-                        context.contentResolver, DerpFestSettings.System.DOUBLE_TAP_SLEEP_GESTURE,
+                        context.contentResolver, LMOSettings.System.DOUBLE_TAP_SLEEP_GESTURE,
                         if (context.resources.getBoolean(com.android.internal.
                                 R.bool.config_dt2sGestureEnabledByDefault)) 1 else 0) != 0
             }
         }
         context.contentResolver.registerContentObserver(
-                Settings.System.getUriFor(DerpFestSettings.System.DOUBLE_TAP_SLEEP_GESTURE),
+                Settings.System.getUriFor(LMOSettings.System.DOUBLE_TAP_SLEEP_GESTURE),
                 false, contentObserver)
         contentObserver.onChange(true)
 

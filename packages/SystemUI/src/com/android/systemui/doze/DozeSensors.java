@@ -120,7 +120,6 @@ public class DozeSensors {
     private boolean mListeningProxSensors;
     private boolean mListeningAodOnlySensors;
     private boolean mUdfpsEnrolled;
-    private boolean mSupportProximitySensor;
 
     @DevicePostureController.DevicePostureInt
     private int mDevicePosture;
@@ -169,8 +168,7 @@ public class DozeSensors {
         mDozeLog = dozeLog;
         mProximitySensor = proximitySensor;
         mProximitySensor.setTag(TAG);
-        mSupportProximitySensor = resources.getBoolean(com.android.systemui.R.bool.doze_proximity_sensor_supported);
-        mSelectivelyRegisterProxSensors = dozeParameters.getSelectivelyRegisterSensorsUsingProx() && mSupportProximitySensor;
+        mSelectivelyRegisterProxSensors = dozeParameters.getSelectivelyRegisterSensorsUsingProx();
         mListeningProxSensors = !mSelectivelyRegisterProxSensors;
         mSelectedUserInteractor = selectedUserInteractor;
         mScreenOffUdfpsEnabled =
@@ -288,16 +286,15 @@ public class DozeSensors {
                         false /* requiresAod */
                 ),
         };
-        if (!mSupportProximitySensor) {
-            return;
+        if (resources.getBoolean(com.android.systemui.res.R.bool.doze_proximity_sensor_supported)) {
+            setProxListening(false);  // Don't immediately start listening when we register.
+            mProximitySensor.register(
+                    proximityEvent -> {
+                        if (proximityEvent != null) {
+                            mProxCallback.accept(!proximityEvent.getBelow());
+                        }
+                    });
         }
-        setProxListening(false);  // Don't immediately start listening when we register.
-        mProximitySensor.register(
-                proximityEvent -> {
-                    if (proximityEvent != null) {
-                        mProxCallback.accept(!proximityEvent.getBelow());
-                    }
-                });
 
         mDevicePostureController.addCallback(mDevicePostureCallback);
     }
@@ -520,9 +517,6 @@ public class DozeSensors {
      * @return true if prox is currently near, false if far or null if unknown.
      */
     public Boolean isProximityCurrentlyNear() {
-        if (!mSupportProximitySensor) {
-            return false;
-        }
         return mProximitySensor.isNear();
     }
 

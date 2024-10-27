@@ -108,7 +108,7 @@ import com.android.systemui.statusbar.policy.SplitShadeStateController;
 import com.android.systemui.util.LargeScreenUtils;
 import com.android.systemui.util.kotlin.JavaAdapter;
 
-import org.derpfest.providers.DerpFestSettings;
+import com.libremobileos.providers.LMOSettings;
 
 import dalvik.annotation.optimization.NeverCompile;
 
@@ -399,7 +399,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
             public void onChange(boolean selfChange) {
                 mOneFingerQuickSettingsIntercept = Settings.System.getInt(
                         mPanelView.getContext().getContentResolver(),
-                        DerpFestSettings.System.STATUS_BAR_QUICK_QS_PULLDOWN, 0);
+                        LMOSettings.System.STATUS_BAR_QUICK_QS_PULLDOWN, 0);
             }
         };
 
@@ -2232,7 +2232,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
             mQs.setScrollListener(mQsScrollListener);
             mPanelView.getContext().getContentResolver().registerContentObserver(
                     Settings.System.getUriFor(
-                            DerpFestSettings.System.STATUS_BAR_QUICK_QS_PULLDOWN),
+                            LMOSettings.System.STATUS_BAR_QUICK_QS_PULLDOWN),
                     false, mOneFingerQuickSettingsInterceptObserver);
             mOneFingerQuickSettingsInterceptObserver.onChange(true);
             updateExpansion();

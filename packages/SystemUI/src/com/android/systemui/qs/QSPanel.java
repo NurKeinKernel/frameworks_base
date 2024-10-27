@@ -49,7 +49,7 @@ import com.android.systemui.settings.brightness.BrightnessSliderController;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 
-import org.derpfest.providers.DerpFestSettings;
+import com.libremobileos.providers.LMOSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,17 +145,17 @@ public class QSPanel extends LinearLayout {
             @Override
             public void onChange(boolean selfChange, @Nullable Uri uri) {
                 if (Settings.Secure.getUriFor(
-                            DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS).equals(uri)
+                            LMOSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS).equals(uri)
                         && mIsAutomaticBrightnessAvailable) {
                     updateViewVisibilityForTuningValue(mAutoBrightnessView,
-                            DerpFestSettings.Secure.getString(mContext.getContentResolver(),
-                                    DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS));
+                            Settings.Secure.getString(mContext.getContentResolver(),
+                                    LMOSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS));
                 } else if (Settings.Secure.getUriFor(
-                            DerpFestSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER).equals(uri)
+                            LMOSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER).equals(uri)
                         && mBrightnessView != null) {
                     updateViewVisibilityForTuningValue(mBrightnessView,
-                            DerpFestSettings.Secure.getString(mContext.getContentResolver(),
-                                    DerpFestSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER));
+                            Settings.Secure.getString(mContext.getContentResolver(),
+                                    LMOSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER));
                 }
             }
         };

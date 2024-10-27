@@ -207,6 +207,7 @@ java_library_static {
         "netd-client",
         "motorola.hardware.health-V1.0-java",
         "overlayable_policy_aidl-java",
+        "SurfaceFlingerProperties",
         "com.android.sysprop.watchdog",
         "securebox",
         "apache-commons-math",
@@ -228,7 +229,7 @@ java_library_static {
         "dreams_flags_lib",
         "aconfig_new_storage_flags_lib",
         "powerstats_flags_lib",
-        "framework-derpfest.static",
+        "framework-lmodroid.static",
     ],
     javac_shard_size: 50,
     javacflags: [
