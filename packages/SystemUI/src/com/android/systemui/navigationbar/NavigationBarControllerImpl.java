@@ -65,9 +65,9 @@ import com.android.systemui.util.settings.SecureSettings;
 import com.android.wm.shell.back.BackAnimation;
 import com.android.wm.shell.pip.Pip;
 
-import org.derpfest.providers.DerpFestSettings;
-
 import dalvik.annotation.optimization.NeverCompile;
+
+import org.derpfest.providers.DerpFestSettings;
 
 import java.io.PrintWriter;
 import java.util.Optional;

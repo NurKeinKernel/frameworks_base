@@ -126,7 +126,7 @@ import com.android.internal.util.SizedInputStream;
 import com.android.server.LocalServices;
 import com.android.server.SystemService;
 import com.android.server.derpfest.AppLockManagerServiceInternal;
-import com.android.server.derpfest.ParallelSpaceManagerServiceInternal
+import com.android.server.derpfest.ParallelSpaceManagerServiceInternal;
 import com.android.server.pm.pkg.AndroidPackage;
 import com.android.server.pm.pkg.ArchiveState;
 import com.android.server.pm.pkg.PackageStateInternal;

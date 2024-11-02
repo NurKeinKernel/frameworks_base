@@ -381,7 +381,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
             } else if (!canRemoveTiles() && mCurrentDrag.getAdapterPosition() < mEditIndex) {
                 titleText = res.getString(R.string.drag_to_remove_disabled, mMinNumTiles);
             } else {
-                titleText = res.getString(R.string.drag_or_tap_to_remove_tiles);
+                titleText = res.getString(R.string.drag_to_remove_tiles);
             }
 
             ((TextView) holder.itemView.findViewById(android.R.id.title)).setText(titleText);
@@ -468,12 +468,8 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
             public boolean onTouch(View v, MotionEvent ev) {
                 if (ev.getAction() == MotionEvent.ACTION_UP) {
                     int position = holder.getLayoutPosition();
-                    if (position < mEditIndex) {
-                        if (canRemoveTiles()) {
-                           move(position, mEditIndex, true);
-                        }
-                    } else {
-                       move(position, mEditIndex, true);
+                    if (position >= mEditIndex || canRemoveTiles()) {
+                        move(position, mEditIndex, true);
                     }
                 }
                 return false;

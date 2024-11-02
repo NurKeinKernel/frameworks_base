@@ -410,6 +410,8 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
     @MultiUserUnawareField
     Future<?> mImeDrawsImeNavBarResLazyInitFuture;
 
+    private LineageHardwareManager mLineageHardware;
+
     private final ImeTracing.ServiceDumper mDumper = new ImeTracing.ServiceDumper() {
         /**
          * {@inheritDoc}
@@ -419,8 +421,6 @@ public final class InputMethodManagerService implements IInputMethodManagerImpl.
             dumpDebug(proto, InputMethodManagerServiceTraceProto.INPUT_METHOD_MANAGER_SERVICE);
         }
     };
-
-    private LineageHardwareManager mLineageHardware;
 
     static class SessionState {
         final ClientState mClient;

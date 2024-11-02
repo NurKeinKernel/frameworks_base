@@ -73,11 +73,11 @@ import com.android.server.health.HealthServiceWrapper;
 import com.android.server.lights.LightsManager;
 import com.android.server.lights.LogicalLight;
 
-import motorola.hardware.health.V1_0.BatteryProperties;
-import motorola.hardware.health.V1_0.IMotHealth;
-
 import org.derpfest.notification.LedValues;
 import org.derpfest.notification.LineageBatteryLights;
+
+import motorola.hardware.health.V1_0.BatteryProperties;
+import motorola.hardware.health.V1_0.IMotHealth;
 
 import java.io.File;
 import java.io.FileDescriptor;

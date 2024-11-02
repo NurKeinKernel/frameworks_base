@@ -49,6 +49,7 @@ import com.android.systemui.settings.brightness.BrightnessSliderController;
 import com.android.systemui.tuner.TunerService;
 import com.android.systemui.tuner.TunerService.Tunable;
 
+import android.provider.Settings;
 import org.derpfest.providers.DerpFestSettings;
 
 import java.util.ArrayList;
@@ -148,13 +149,13 @@ public class QSPanel extends LinearLayout {
                             DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS).equals(uri)
                         && mIsAutomaticBrightnessAvailable) {
                     updateViewVisibilityForTuningValue(mAutoBrightnessView,
-                            DerpFestSettings.Secure.getString(mContext.getContentResolver(),
+                            Settings.Secure.getString(mContext.getContentResolver(),
                                     DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS));
                 } else if (Settings.Secure.getUriFor(
                             DerpFestSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER).equals(uri)
                         && mBrightnessView != null) {
                     updateViewVisibilityForTuningValue(mBrightnessView,
-                            DerpFestSettings.Secure.getString(mContext.getContentResolver(),
+                            Settings.Secure.getString(mContext.getContentResolver(),
                                     DerpFestSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER));
                 }
             }

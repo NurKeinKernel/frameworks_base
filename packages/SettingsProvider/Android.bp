@@ -31,7 +31,7 @@ android_library {
         "telephony-common",
         "ims-common",
         "unsupportedappusage",
-        "framework-derpfest",
+        "framework-lmodroid",
     ],
     static_libs: [
         "aconfig_new_storage_flags_lib",

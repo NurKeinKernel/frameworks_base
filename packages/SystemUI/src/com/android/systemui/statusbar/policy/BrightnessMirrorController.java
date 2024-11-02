@@ -82,7 +82,7 @@ public class BrightnessMirrorController implements MirrorController {
 
         mIsAutomaticBrightnessAvailable = mBrightnessMirror.getContext().getResources().getBoolean(
                 com.android.internal.R.bool.config_automatic_brightness_available);
-        mShouldShowAutoBrightness = DerpFestSettings.Secure.getInt(
+        mShouldShowAutoBrightness = Settings.Secure.getInt(
                 mBrightnessMirror.getContext().getContentResolver(),
                 DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS, 0) != 0;
         updateIcon();
@@ -91,7 +91,7 @@ public class BrightnessMirrorController implements MirrorController {
                 false, new ContentObserver(null) {
                     @Override
                     public void onChange(boolean selfChange) {
-                        mShouldShowAutoBrightness = DerpFestSettings.Secure.getInt(
+                        mShouldShowAutoBrightness = Settings.Secure.getInt(
                                 mBrightnessMirror.getContext().getContentResolver(),
                                 DerpFestSettings.Secure.QS_SHOW_AUTO_BRIGHTNESS, 0) != 0;
                         updateIcon();

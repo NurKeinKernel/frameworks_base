@@ -247,8 +247,6 @@ import com.android.systemui.util.Utils;
 import com.android.systemui.util.time.SystemClock;
 import com.android.wm.shell.animation.FlingAnimationUtils;
 
-import org.derpfest.providers.DerpFestSettings;
-
 import dalvik.annotation.optimization.NeverCompile;
 
 import kotlin.Unit;
@@ -256,6 +254,8 @@ import kotlin.Unit;
 import kotlinx.coroutines.CoroutineDispatcher;
 import kotlinx.coroutines.flow.Flow;
 import kotlinx.coroutines.flow.StateFlow;
+
+import org.derpfest.providers.DerpFestSettings;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -376,7 +376,6 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     private final QuickSettingsControllerImpl mQsController;
     private final NaturalScrollingSettingObserver mNaturalScrollingSettingObserver;
     private final TouchHandler mTouchHandler = new TouchHandler();
-
     private long mDownTime;
     private boolean mTouchSlopExceededBeforeDown;
     private float mOverExpansion;

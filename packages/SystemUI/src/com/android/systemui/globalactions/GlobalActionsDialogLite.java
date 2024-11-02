@@ -161,7 +161,6 @@ import com.android.systemui.util.settings.SecureSettings;
 
 import org.derpfest.app.LineageGlobalActions;
 import org.derpfest.providers.DerpFestSettings;
-
 import org.derpfest.util.PowerMenuUtils;
 
 import java.util.ArrayList;
@@ -193,7 +192,7 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     private static final boolean SHOW_SILENT_TOGGLE = true;
 
     /* Valid settings for restart actions keys.
-     * see frameworks_derpfest config.xml config_restartActionsList */
+     * see lineage-sdk config.xml config_restartActionsList */
     private static final String RESTART_ACTION_KEY_RESTART = "restart";
     private static final String RESTART_ACTION_KEY_RESTART_RECOVERY = "restart_recovery";
     private static final String RESTART_ACTION_KEY_RESTART_BOOTLOADER = "restart_bootloader";

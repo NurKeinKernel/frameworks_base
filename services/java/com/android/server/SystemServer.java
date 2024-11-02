@@ -304,7 +304,7 @@ import java.util.TreeSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 
-import org.derpfest.server.DerpFestSystemServer;
+import org.derpfest.server.LMOSystemServer;
 
 /**
  * Entry point to {@code system_server}.
@@ -2823,7 +2823,7 @@ public final class SystemServer implements Dumpable {
         t.traceEnd();
 
         t.traceBegin("startDerpFestServices");
-        DerpFestSystemServer.startServices(context, mSystemServiceManager);
+        LMOSystemServer.startServices(context, mSystemServiceManager);
         t.traceEnd();
 
         // It is now time to start up the app processes...

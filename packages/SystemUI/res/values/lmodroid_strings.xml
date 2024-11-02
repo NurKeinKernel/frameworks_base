@@ -1,18 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2024 DerpFest
-     SPDX-License-Identifier: Apache-2.0
+/**
+ * Copyright (c) 2015, The CyanogenMod Project
+ * Copyright (c) 2017-2021 The LineageOS Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Name of the clock in status bar [CHAR LIMIT=30] -->
     <string name="clock">Clock</string>
 
-    <!-- Status bar -->
-    <string name="status_bar_icons_title">Status bar icons</string>
-
     <!-- Advanced restart menu -->
     <!-- Button to indicate more options -->
-    <string name="global_action_restart_more">Reboot\u2026</string>
+    <string name="global_action_restart_more">Restart\u2026</string>
     <!-- Button to restart the device, within the Restart Options dialog -->
     <string name="global_action_restart_system">System</string>
     <!-- Button to restart the device into recovery mode, within the Restart Options dialog -->
@@ -23,16 +34,17 @@
     <string name="global_action_restart_download">Download</string>
     <!-- Button to restart the device into fastboot mode, within the Restart Options dialog -->
     <string name="global_action_restart_fastboot">Fastbootd</string>
+
     <!-- Restart progress dialog. This is shown if the user chooses to restart the device. -->
-    <string name="global_action_restart_progress">Rebooting\u2026</string>
+    <string name="global_action_restart_progress">Restarting\u2026</string>
     <!-- Restart to recovery mode progress dialog. This is shown if the user chooses to restart the device. -->
-    <string name="global_action_restart_recovery_progress">Rebooting to Recovery\u2026</string>
+    <string name="global_action_restart_recovery_progress">Restarting to recovery mode\u2026</string>
     <!-- Restart to bootloader mode progress dialog. This is shown if the user chooses to restart the device. -->
-    <string name="global_action_restart_bootloader_progress">Rebooting to Bootloader\u2026</string>
+    <string name="global_action_restart_bootloader_progress">Restarting to bootloader mode\u2026</string>
     <!-- Restart to download mode progress dialog. This is shown if the user chooses to restart the device. -->
-    <string name="global_action_restart_download_progress">Rebooting to Download\u2026</string>
+    <string name="global_action_restart_download_progress">Restarting to download mode\u2026</string>
     <!-- Restart to fastboot mode progress dialog. This is shown if the user chooses to restart the device. -->
-    <string name="global_action_restart_fastboot_progress">Rebooting to Fastbootd\u2026</string>
+    <string name="global_action_restart_fastboot_progress">Restarting to fastbootd mode\u2026</string>
 
     <!-- Label for current user in power menu options dialog -->
     <string name="global_action_current_user">Current</string>
@@ -46,23 +58,19 @@
     <string name="status_bar_firewall">Firewall</string>
     <string name="status_bar_firewall_slot" translatable="false">firewall</string>
 
-    <!-- Status bar network traffic monitor strings -->
-    <string name="kilobitspersecond_short" translatable="false">kb/s</string>
-    <string name="megabitspersecond_short" translatable="false">Mb/s</string>
-    <string name="gigabitspersecond_short" translatable="false">Gb/s</string>
-    <string name="kilobytespersecond_short" translatable="false">kB/s</string>
-    <string name="megabytespersecond_short" translatable="false">MB/s</string>
-    <string name="gigabytespersecond_short" translatable="false">GB/s</string>
+    <!-- Status bar - icons -->
+    <string name="status_bar_icons_title">Status bar icons</string>
 
     <!-- Label for area where tiles can be added to the qs panel -->
     <string name="drag_or_tap_to_add_tiles">Hold &amp; drag or tap to add tiles</string>
-    <!-- Label for the area where tiles can be dragged in to remove -->
-    <string name="drag_or_tap_to_remove_tiles">Hold &amp; drag or tap to remove tiles</string>
 
     <!-- Label for UI element which allows deleting the screenshot [CHAR LIMIT=30] -->
     <string name="screenshot_delete_label">Delete</string>
     <!-- Content description indicating that tapping the element will allow deleting the screenshot [CHAR LIMIT=NONE] -->
     <string name="screenshot_delete_description">Delete screenshot</string>
+
+    <!-- Channel name for Battery notifications -->
+    <string name="battery_notification_channel_tv">Battery warning</string>
 
     <!-- Data usage info in QS footer -->
     <string name="usage_data">used today</string>
