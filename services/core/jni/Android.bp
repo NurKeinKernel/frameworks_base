@@ -131,6 +131,7 @@ cc_defaults {
         "libmtp",
         "libnativehelper",
         "libnativewindow",
+        "libpowerext",
         "libpowermanager",
         "libprocessgroup",
         "libutils",

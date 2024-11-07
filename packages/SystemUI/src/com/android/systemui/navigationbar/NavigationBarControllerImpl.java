@@ -35,6 +35,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
+import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.IWindowManager;
 import android.view.View;
@@ -65,9 +66,9 @@ import com.android.systemui.util.settings.SecureSettings;
 import com.android.wm.shell.back.BackAnimation;
 import com.android.wm.shell.pip.Pip;
 
-import org.derpfest.providers.DerpFestSettings;
-
 import dalvik.annotation.optimization.NeverCompile;
+
+import org.derpfest.providers.DerpFestSettings;
 
 import java.io.PrintWriter;
 import java.util.Optional;
@@ -405,9 +406,14 @@ public class NavigationBarControllerImpl implements
             return;
         }
 
-        final Context context = isOnDefaultDisplay
-                ? mContext
-                : mContext.createDisplayContext(display);
+        final Context context;
+        if (isOnDefaultDisplay) {
+            context = mContext;
+        } else {
+            Context rawContext = mContext.createDisplayContext(display);
+            context = new ContextThemeWrapper(rawContext,
+                com.android.systemui.res.R.style.Theme_SystemUI);
+        }
         NavigationBarComponent component = mNavigationBarComponentFactory.create(
                 context, savedState);
         NavigationBar navBar = component.getNavigationBar();

@@ -88,9 +88,12 @@ import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController.DeviceProvisionedListener;
 import com.android.systemui.util.kotlin.JavaAdapter;
 import com.android.systemui.util.settings.SecureSettings;
+import com.android.systemui.util.settings.SystemSettings;
 
 import com.google.ux.material.libmonet.dynamiccolor.DynamicColor;
 import com.google.ux.material.libmonet.dynamiccolor.MaterialDynamicColors;
+
+import org.derpfest.providers.DerpFestSettings;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -127,6 +130,7 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
     private final BroadcastDispatcher mBroadcastDispatcher;
     private final Executor mBgExecutor;
     private final SecureSettings mSecureSettings;
+    private final SystemSettings mSystemSettings;
     private final Executor mMainExecutor;
     private final Handler mBgHandler;
     private final Context mContext;
@@ -420,6 +424,7 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
             @Background Executor bgExecutor,
             ThemeOverlayApplier themeOverlayApplier,
             SecureSettings secureSettings,
+            SystemSettings systemSettings,
             WallpaperManager wallpaperManager,
             UserManager userManager,
             DeviceProvisionedController deviceProvisionedController,
@@ -445,6 +450,7 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
         mBgHandler = bgHandler;
         mThemeManager = themeOverlayApplier;
         mSecureSettings = secureSettings;
+        mSystemSettings = systemSettings;
         mWallpaperManager = wallpaperManager;
         mUserTracker = userTracker;
         mResources = resources;
@@ -496,6 +502,54 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
             // Force reload so that we update even when the main color has not changed
             reevaluateSystemTheme(true /* forceReload */);
         });
+
+        mSecureSettings.registerContentObserverForUserSync(
+                Settings.Secure.getUriFor(DerpFestSettings.Secure.BERRY_BLACK_THEME),
+                false,
+                new ContentObserver(mBgHandler) {
+                    @Override
+                    public void onChange(boolean selfChange, Collection<Uri> collection, int flags,
+                            int userId) {
+                        if (DEBUG) Log.d(TAG, "Overlay changed for user: " + userId);
+                        if (mUserTracker.getUserId() != userId) {
+                            return;
+                        }
+                        if (!mDeviceProvisionedController.isUserSetup(userId)) {
+                            Log.i(TAG, "Theme application deferred when setting changed.");
+                            mDeferredThemeEvaluation = true;
+                            return;
+                        }
+                        reevaluateSystemTheme(true /* forceReload */);
+                    }
+                },
+                UserHandle.USER_ALL);
+
+        mSystemSettings.registerContentObserverForUserSync(
+                Settings.System.getUriFor(DerpFestSettings.System.STATUS_BAR_BATTERY_STYLE),
+                false,
+                new ContentObserver(mBgHandler) {
+                    @Override
+                    public void onChange(boolean selfChange, Collection<Uri> collection, int flags,
+                            int userId) {
+                        if (DEBUG) Log.d(TAG, "Overlay changed for user: " + userId);
+                        if (mUserTracker.getUserId() != userId) {
+                            return;
+                        }
+                        if (!mDeviceProvisionedController.isUserSetup(userId)) {
+                            Log.i(TAG, "Theme application deferred when setting changed.");
+                            mDeferredThemeEvaluation = true;
+                            return;
+                        }
+                        boolean isCircleBattery = Settings.System.getIntForUser(
+                                mContext.getContentResolver(),
+                                DerpFestSettings.System.STATUS_BAR_BATTERY_STYLE,
+                                0, UserHandle.USER_CURRENT) == 1;
+                        if (isCircleBattery) {
+                            reevaluateSystemTheme(true /* forceReload */);
+                        }
+                    }
+                },
+                UserHandle.USER_ALL);
 
         // All wallpaper color and keyguard logic only applies when Monet is enabled.
         if (!mIsMonetEnabled) {
@@ -780,10 +834,14 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
             }
         }
 
+        boolean isBlackMode = (Settings.Secure.getIntForUser(
+                mContext.getContentResolver(), DerpFestSettings.Secure.BERRY_BLACK_THEME,
+                0, currentUser) == 1) && isNightMode();
+
         // Compatibility with legacy themes, where full packages were defined, instead of just
         // colors.
         if (!categoryToPackage.containsKey(OVERLAY_CATEGORY_SYSTEM_PALETTE)
-                && mNeutralOverlay != null) {
+                && mNeutralOverlay != null && !isBlackMode) {
             categoryToPackage.put(OVERLAY_CATEGORY_SYSTEM_PALETTE,
                     mNeutralOverlay.getIdentifier());
         }
@@ -820,9 +878,13 @@ public class ThemeOverlayController implements CoreStartable, Dumpable {
 
         if (mNeedsOverlayCreation) {
             mNeedsOverlayCreation = false;
-            fOverlays = new FabricatedOverlay[]{
-                    mSecondaryOverlay, mNeutralOverlay, mDynamicOverlay
-            };
+            fOverlays = new FabricatedOverlay[isBlackMode ? 2 : 3];
+            int c = 0;
+            fOverlays[c++] = mSecondaryOverlay;
+            if (!isBlackMode) {
+                fOverlays[c++] = mNeutralOverlay;
+            }
+            fOverlays[c++] = mDynamicOverlay;
         }
 
         mThemeManager.applyCurrentUserOverlays(categoryToPackage, fOverlays, currentUser,

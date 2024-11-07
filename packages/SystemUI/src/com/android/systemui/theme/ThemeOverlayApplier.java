@@ -17,6 +17,7 @@ package com.android.systemui.theme;
 
 
 import android.annotation.AnyThread;
+import android.content.Context;
 import android.content.om.FabricatedOverlay;
 import android.content.om.OverlayIdentifier;
 import android.content.om.OverlayInfo;
@@ -148,18 +149,23 @@ public class ThemeOverlayApplier implements Dumpable {
     private final String mLauncherPackage;
     private final String mThemePickerPackage;
 
+    private final String mBlackThemeOverlayPackage;
+
     @Inject
     public ThemeOverlayApplier(OverlayManager overlayManager,
             @Background Executor bgExecutor,
             @Named(ThemeModule.LAUNCHER_PACKAGE) String launcherPackage,
             @Named(ThemeModule.THEME_PICKER_PACKAGE) String themePickerPackage,
             DumpManager dumpManager,
-            @Main Executor mainExecutor) {
+            @Main Executor mainExecutor,
+            Context context) {
         mOverlayManager = overlayManager;
         mBgExecutor = bgExecutor;
         mMainExecutor = mainExecutor;
         mLauncherPackage = launcherPackage;
         mThemePickerPackage = themePickerPackage;
+        mBlackThemeOverlayPackage = context.getString(
+                com.android.internal.R.string.config_black_theme_overlay_package);
         mTargetPackageToCategories.put(ANDROID_PACKAGE, Sets.newHashSet(
                 OVERLAY_CATEGORY_SYSTEM_PALETTE, OVERLAY_CATEGORY_ACCENT_COLOR,
                 OVERLAY_CATEGORY_DYNAMIC_COLOR,
@@ -205,6 +211,7 @@ public class ThemeOverlayApplier implements Dumpable {
     ) {
 
         mBgExecutor.execute(() -> {
+            boolean isBlackMode = false;
 
             // Disable all overlays that have not been specified in the user setting.
             final Set<String> overlayCategoriesToDisable = new HashSet<>(THEME_CATEGORIES);
@@ -228,6 +235,7 @@ public class ThemeOverlayApplier implements Dumpable {
             OverlayManagerTransaction.Builder transaction = getTransactionBuilder();
             HashSet<OverlayIdentifier> identifiersPending = new HashSet<>();
             if (pendingCreation != null) {
+                isBlackMode = pendingCreation.length == 2;
                 for (FabricatedOverlay overlay : pendingCreation) {
                     identifiersPending.add(overlay.getIdentifier());
                     transaction.registerFabricatedOverlay(overlay);
@@ -257,7 +265,47 @@ public class ThemeOverlayApplier implements Dumpable {
             } catch (SecurityException | IllegalStateException e) {
                 Log.e(TAG, "setEnabled failed", e);
             }
+
+            checkDarkUserOverlays(currentUser, onComplete, isBlackMode);
         });
+    }
+
+    private void checkDarkUserOverlays(
+            int currentUser,
+            Runnable onComplete,
+            boolean isBlackMode
+    ) {
+        OverlayManagerTransaction.Builder transaction = getTransactionBuilder();
+        try {
+            transaction.setEnabled(getOverlayID(mBlackThemeOverlayPackage), isBlackMode, currentUser);
+            transaction.setEnabled(getOverlayID("android:neutral"), !isBlackMode, currentUser);
+            mOverlayManager.commit(transaction.build());
+            if (onComplete != null) {
+                Log.d(TAG, "Executing onComplete runnable");
+                mMainExecutor.execute(onComplete);
+            }
+        } catch (SecurityException | IllegalStateException e) {
+            Log.e(TAG, "setEnabled failed", e);
+        }
+    }
+
+    private OverlayIdentifier getOverlayID(String name) throws IllegalStateException {
+        if (name.contains(":")) {
+            final String[] value = name.split(":");
+            final String pkgName = value[0];
+            final String overlayName = value[1];
+            final List<OverlayInfo> infos =
+                    mOverlayManager.getOverlayInfosForTarget(pkgName, UserHandle.CURRENT);
+            for (OverlayInfo info : infos) {
+                if (overlayName.equals(info.getOverlayName()))
+                    return info.getOverlayIdentifier();
+            }
+            throw new IllegalStateException("No overlay found for " + name);
+        }
+        OverlayInfo overlayInfo = mOverlayManager.getOverlayInfo(name, UserHandle.CURRENT);
+        if (overlayInfo != null)
+            return overlayInfo.getOverlayIdentifier();
+        throw new IllegalStateException("No overlay found for " + name);
     }
 
     @VisibleForTesting

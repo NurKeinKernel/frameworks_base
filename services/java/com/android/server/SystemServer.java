@@ -304,7 +304,7 @@ import java.util.TreeSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 
-import org.derpfest.server.DerpFestSystemServer;
+import org.derpfest.server.LMOSystemServer;
 
 /**
  * Entry point to {@code system_server}.
@@ -2557,6 +2557,10 @@ public final class SystemServer implements Dumpable {
                     = mPackageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT);
 
             if (hasFeatureFace) {
+                t.traceBegin("startLMOFaceUnlockService");
+                LMOSystemServer.startFaceUnlockService(context, mSystemServiceManager);
+                t.traceEnd();
+
                 t.traceBegin("StartFaceSensor");
                 final FaceService faceService =
                         mSystemServiceManager.startService(FaceService.class);
@@ -2822,8 +2826,8 @@ public final class SystemServer implements Dumpable {
         mSystemServiceManager.startService(TracingServiceProxy.class);
         t.traceEnd();
 
-        t.traceBegin("startDerpFestServices");
-        DerpFestSystemServer.startServices(context, mSystemServiceManager);
+        t.traceBegin("startLMODroidServices");
+        LMOSystemServer.startServices(context, mSystemServiceManager);
         t.traceEnd();
 
         // It is now time to start up the app processes...

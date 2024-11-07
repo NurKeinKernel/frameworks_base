@@ -1225,7 +1225,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         int delay = 0;
         if (mOverlay.getRequestReason() == REASON_AUTH_KEYGUARD) {
             delay = mContext.getResources().getInteger(
-                        com.android.systemui.R.integer.config_udfpsDimmingDisableDelay);
+                        com.android.systemui.res.R.integer.config_udfpsDimmingDisableDelay);
         } else if ((mOverlay.getRequestReason() == REASON_ENROLL_ENROLLING) ||
                 (mOverlay.getRequestReason() == REASON_ENROLL_FIND_SENSOR)) {
             delay = mContext.getResources().getInteger(

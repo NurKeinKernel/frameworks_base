@@ -1,16 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-     Copyright (C) 2024 DerpFest
-     SPDX-License-Identifier: Apache-2.0
--->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
-    <!-- Description for the screen zoom level that makes interface elements smaller. [CHAR LIMIT=24] -->
-    <string name="screen_zoom_summary_smaller">Kleiner</string>
-    <!-- Description for the screen zoom level that makes interface elements smallest. [CHAR LIMIT=24] -->
-    <string name="screen_zoom_summary_smallest">Am kleinsten</string>
-
-    <!-- ZenMode -->
+<resources>
     <string name="interruption_level_none_with_warning" msgid="8394434073508145437">"Lautlos. Damit werden auch Screenreader stummgeschaltet."</string>
     <string name="interruption_level_priority" msgid="661294280016622209">"Nur wichtige Unterbrechungen"</string>
     <string name="interruption_level_alarms" msgid="2457850481335846959">"Nur Weckrufe"</string>

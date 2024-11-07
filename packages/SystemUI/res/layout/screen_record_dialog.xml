@@ -142,7 +142,7 @@
                         android:src="@drawable/ic_screen_awake"
                         android:tint="?android:attr/textColorSecondary"
                         android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/screenrecord_option_padding"/>
+                        android:layout_marginEnd="@dimen/screenrecord_option_padding"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

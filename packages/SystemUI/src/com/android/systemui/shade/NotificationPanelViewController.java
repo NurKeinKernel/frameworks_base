@@ -106,6 +106,7 @@ import com.android.internal.policy.SystemBarUtils;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.LatencyTracker;
 import com.android.keyguard.ActiveUnlockConfig;
+import com.android.keyguard.FaceIconViewController;
 import com.android.keyguard.KeyguardClockSwitch.ClockSize;
 import com.android.keyguard.KeyguardStatusView;
 import com.android.keyguard.KeyguardStatusViewController;
@@ -247,8 +248,6 @@ import com.android.systemui.util.Utils;
 import com.android.systemui.util.time.SystemClock;
 import com.android.wm.shell.animation.FlingAnimationUtils;
 
-import org.derpfest.providers.DerpFestSettings;
-
 import dalvik.annotation.optimization.NeverCompile;
 
 import kotlin.Unit;
@@ -256,6 +255,8 @@ import kotlin.Unit;
 import kotlinx.coroutines.CoroutineDispatcher;
 import kotlinx.coroutines.flow.Flow;
 import kotlinx.coroutines.flow.StateFlow;
+
+import org.derpfest.providers.DerpFestSettings;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -376,7 +377,6 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     private final QuickSettingsControllerImpl mQsController;
     private final NaturalScrollingSettingObserver mNaturalScrollingSettingObserver;
     private final TouchHandler mTouchHandler = new TouchHandler();
-
     private long mDownTime;
     private boolean mTouchSlopExceededBeforeDown;
     private float mOverExpansion;
@@ -707,6 +707,8 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     private PulseLightView mPulseLightView;
     private NotifPipeline mNotifPipeline;
 
+    private final FaceIconViewController mFaceIconViewController;
+
     @Inject
     public NotificationPanelViewController(NotificationPanelView view,
             @Main Handler handler,
@@ -805,7 +807,8 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             KeyguardClockPositionAlgorithm keyguardClockPositionAlgorithm,
             NaturalScrollingSettingObserver naturalScrollingSettingObserver,
             Context context,
-            NotifPipeline notifPipeline) {
+            NotifPipeline notifPipeline,
+            FaceIconViewController faceIconViewController) {
         SceneContainerFlag.assertInLegacyMode();
         keyguardStateController.addCallback(new KeyguardStateController.Callback() {
             @Override
@@ -978,6 +981,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
         mUnlockedScreenOffAnimationController = unlockedScreenOffAnimationController;
         mLastDownEvents = new NPVCDownEventState.Buffer(MAX_DOWN_EVENT_BUFFER_SIZE);
         mDeviceEntryFaceAuthInteractor = deviceEntryFaceAuthInteractor;
+        mFaceIconViewController = faceIconViewController;
 
         int currentMode = navigationModeController.addListener(
                 mode -> mIsGestureNavigation = QuickStepContract.isGesturalMode(mode));
@@ -2857,6 +2861,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             mKeyguardBottomAreaInteractor.setAlpha(alpha);
         }
         mLockIconViewController.setAlpha(alpha);
+        mFaceIconViewController.setAlpha(alpha);
     }
 
     private void onExpandingFinished() {
@@ -4931,6 +4936,10 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             }
             if (mKeyguardUserSwitcherController != null) {
                 mKeyguardUserSwitcherController.setAlpha(alpha);
+            }
+
+            if (mFaceIconViewController != null) {
+                mFaceIconViewController.setAlpha(alpha);
             }
         };
     }
